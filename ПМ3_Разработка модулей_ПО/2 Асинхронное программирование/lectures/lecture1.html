@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Факториал и блокировка UI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    #box {
+      width: 50px;
+      height: 50px;
+      background: #4CAF50;
+      position: relative;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Сумма чисел и блокировка интерфейса</h1>
+  <div id="box"></div>
+  <button id="calcBtn">Вычислить сумму</button>
+  <button >Просто кнопка</button>
+  <div id="result"></div>
+
+  <script>
+    // JS-анимация: двигаем квадрат туда-сюда
+    let box = document.getElementById("box");
+    let pos = 0, direction = 1;
+
+    function animate() {
+      pos += direction * 2;
+      if (pos > 200 || pos < 0) direction *= -1;
+      box.style.left = pos + "px";
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Синхронная тяжелая задача
+    function heavyTask(n) {
+        let res = 0n;
+        for (let i=1n; i<=n; i++){
+            res += i;       
+        }
+        return res;
+    }
+    /*Находим кнопку с id="calcBtn", Добавляем обработчик события click,
+    Используем стрелочную функцию как callback*/
+    document.getElementById("calcBtn").addEventListener("click", () => {
+      document.getElementById("result").textContent = "Вычисляем...";
+ 
+      let res = heavyTask(100000000n);
+      document.getElementById("result").textContent = "Готово!";
+      console.log("Сумма посчитана (длина числа):", res.toString().length);
+    });
+  </script>
+</body>
+</html>
+
