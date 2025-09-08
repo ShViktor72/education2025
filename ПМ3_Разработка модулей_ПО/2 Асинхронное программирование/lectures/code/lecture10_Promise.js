@@ -33,3 +33,44 @@ fetchData
   
   
 // Example 2
+const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        const success = Math.random() > 0.3; // 70% успеха
+        if (success) resolve("Успех!");
+        else reject("Ошибка!");
+    }, 1000);
+});
+
+promise
+    .then((result) => { console.log("Результат:", result); })
+    .catch((error) => { console.error("Ошибка:", error); })
+    .finally(() => { console.log("Завершено"); });
+
+// Example 3
+// пример использования цепочки then с передачей измененных данных
+const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        const success = Math.random() > 0.3; // 70% успеха
+        if (success) resolve(5); // Начальное значение
+        else reject("Ошибка!");
+    }, 1000);
+});
+
+promise
+    .then((value) => {
+        console.log("Начальное значение:", value);
+        return value * 2; // Увеличиваем значение в 2 раза
+    })
+    .then((newValue) => {
+        console.log("Увеличенное значение:", newValue);
+        return newValue + 3; // Добавляем 3
+    })
+    .then((finalValue) => {
+        console.log("Финальное значение:", finalValue);
+    })
+    .catch((error) => {
+        console.error("Ошибка:", error);
+    })
+    .finally(() => {
+        console.log("Завершено");
+    });
