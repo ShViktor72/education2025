@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Cards</title>
+  <style>
+    #products {
+      display: flex;
+      gap: 20px;
+    }
+
+    .product-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      width: 200px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .hovered {
+      transform: translateY(-10px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <h1>Products</h1>
+  <div id="products"></div>
+  <script src="product.js"></script>
+</body>
+</html>
