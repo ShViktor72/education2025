@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Radio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .station {
+            border: 1px solid #125cca;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .station:hover {
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .station.active {
+            border: 3px solid;
+            border-color: #0f5132;
+        }
+        .station img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            vertical-align: middle;
+            border-radius: 10%;
+        }
+        .station-info {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        #player-container {
+            margin-top: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Internet Radio</h1>
+    <h2 id="current-station">Select a station to play</h2>
+    <div id="stations"></div>
+    <div id="player-container">
+        <audio id="player" controls></audio>
+        <button id="stop-button">Stop</button>
+    </div>
+    <script src="radio.js"></script>
+</body>
+</html>
