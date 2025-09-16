@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Cards</title>
+  <style>
+    #products {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap; 
+    }
+
+    .product-card {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 8px;
+        width: 200px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex; 
+        flex-direction: column;
+        justify-content: space-between; 
+    }
+
+    .product-image-container {
+        padding: 10px;
+        flex-grow: 1; 
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+    }
+
+    .product-image-container img {
+        max-width: 100%;
+        height: auto;
+        object-fit: contain; 
+    }
+
+    .product-info-bottom {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .product-info-bottom h3 {
+        font-size: 1.1em;
+        margin: 0 0 5px;
+    }
+
+    .product-price {
+        font-weight: bold;
+        margin: 5px 0 10px;
+        color: #333;
+    }
+
+    .add-to-cart-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .add-to-cart-btn:hover {
+        background-color: #45a049;
+    }
+
+    .hovered {
+        transform: translateY(-10px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <h1>Products</h1>
+  <div id="products"></div>
+  <script src="product.js"></script>
+</body>
+</html>

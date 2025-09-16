@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Скринсейвер с котиками и пёсиками</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #fafafa;
+      padding: 20px;
+    }
+    img {
+      max-width: 400px;
+      max-height: 400px;
+      margin: 20px auto;
+      display: block;
+      transition: opacity 0.5s;
+    }
+    #controls {
+      margin: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #source {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Скринсейвер 🐱🐶</h1>
+
+  <div id="controls">
+    <button id="toggle">Котики 🐱</button>
+    <button id="pause">Пауза</button>
+  </div>
+
+  <img id="animal-image" src="" alt="Здесь будет животное">
+  <div id="source"></div>
+
+  <script>
+    // TODO: Получить элементы DOM-дерева:
+    // - картинку (img)
+    // - кнопку переключения (toggle)
+    // - кнопку паузы (pause)
+    // - блок для ссылки (source)
+
+    let currentAnimal = "cat"; // TODO: переключать на "dog"
+    let intervalId;
+    let isPaused = false;
+
+    // TODO: функция для загрузки изображения
+    async function fetchImage() {
+      // 1. Определить URL для котика или пёсика
+      //    Котики: https://api.thecatapi.com/v1/images/search
+      //    Пёсики: https://dog.ceo/api/breeds/image/random
+      // 2. Сделать fetch + await response.json()
+      // 3. Достать URL картинки из ответа
+      // 4. Скрыть старое изображение (opacity = 0)
+      // 5. Когда новое загрузится (onload), показать его
+      // 6. В sourceDiv вывести ссылку на источник
+      // 7. Обработать ошибки (try/catch)
+    }
+
+    // TODO: запуск автоматической смены
+    function startSlideshow() {
+      // 1. Сразу загрузить первую картинку
+      // 2. Каждые 3 секунды вызывать fetchImage()
+    }
+
+    // TODO: обработчик переключения животного
+    // (переключать currentAnimal, менять текст кнопки, грузить новое изображение)
+
+    // TODO: обработчик паузы
+    // (останавливать или возобновлять setInterval, менять текст кнопки)
+
+    // 🚀 Запуск
+    startSlideshow();
+  </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Курс криптовалют</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    #rate-block {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      background: #eee; /* цвет будет меняться на красный/зелёный */
+      transition: background 0.3s;
+    }
+    select {
+      font-size: 18px;
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>💰 Курс криптовалют</h1>
+
+  <!-- TODO: выпадающий список для выбора монеты -->
+  <select id="coin-select">
+    <option value="bitcoin">BTC</option>
+    <option value="ethereum">ETH</option>
+    <option value="dogecoin">DOGE</option>
+  </select>
+
+  <!-- TODO: блок для курса -->
+  <div id="rate-block">Текущий курс: —</div>
+
+  <script>
+    // TODO: Получить элементы DOM:
+    // - select (coin-select)
+    // - блок курса (rate-block)
+
+    let previousRate = null;
+    let intervalId;
+
+    // TODO: функция для загрузки курса
+    async function fetchRate(coin) {
+      // 1. Сформировать URL для CoinGecko API:
+      //    https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd
+      // 2. Сделать fetch + await response.json()
+      // 3. Достать курс coin → usd
+      // 4. Сравнить с previousRate:
+      //    - если новый >= предыдущего → фон зелёный
+      //    - если меньше → фон красный
+      // 5. Обновить текст и previousRate
+    }
+
+    // TODO: запуск обновления каждые 10 сек
+    function startUpdater() {
+      // 1. Вызвать fetchRate() для выбранной монеты
+      // 2. Каждые 10 секунд обновлять курс
+    }
+
+    // TODO: обработчик смены монеты
+    // (сбрасывать previousRate, сразу загружать новый курс)
+
+    // 🚀 Запуск
+    startUpdater();
+  </script>
+</body>
+</html>
