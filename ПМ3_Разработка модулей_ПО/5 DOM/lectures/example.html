@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Пример JS</title>
+  <style>
+    #btn { padding: 10px; background: lightblue; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <button id="btn">Нажми меня</button>
+  <p id="msg"></p>
+
+  <script>
+    const btn = document.getElementById('btn');
+    const msg = document.getElementById('msg');
+
+    btn.addEventListener('click', () => {
+      msg.textContent = "Привет! Это JavaScript сделал страницу «живой» 😊";
+      btn.style.background = "lightgreen";
+    });
+  </script>
+</body>
+</html>

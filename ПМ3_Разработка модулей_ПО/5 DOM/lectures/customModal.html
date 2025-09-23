@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 200px;
+        }
+        .modal-content button {
+            margin: 5px;
+            padding: 8px 12px;
+        }
+          .alert {
+            position: fixed;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            margin-top: 20px;
+            background: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            display: none;
+            animation: fadeInOut 3s forwards;
+        }
+          @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -20px); }
+            10% { opacity: 1; transform: translate(-50%, 0); }
+            90% { opacity: 1; }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+    </style>
+
+    <div class="modal" id="myModal">
+    <div class="modal-content">
+        <p>Удалить запись?</p>
+        <button id="yesBtn">Да</button>
+        <button id="noBtn">Нет</button>
+    </div>
+    </div>
+    <div class="alert" id="myAlert"></div>
+
+    <script>
+        // кастомный confirm
+        function showConfirm(message, callback) {
+        let modal = document.getElementById("myModal");
+        modal.querySelector("p").textContent = message;
+
+        modal.style.display = "flex";
+
+        document.getElementById("yesBtn").onclick = () => {
+            modal.style.display = "none";
+            callback(true);
+        };
+        document.getElementById("noBtn").onclick = () => {
+            modal.style.display = "none";
+            callback(false);
+        };
+        }
+
+        // кастомный alert
+        function showAlert(message) {
+        let alertBox = document.getElementById("myAlert");
+        alertBox.textContent = message;
+        alertBox.style.display = "block";
+
+        // Автоматическое скрытие через 3 секунды
+        setTimeout(() => {
+            alertBox.style.display = "none";
+        }, 3000);
+        }
+
+        // Пример использования
+        document.body.insertAdjacentHTML("beforeend", '<button onclick="test()">Удалить</button>');
+
+        function test() {
+        showConfirm("Удалить запись?", function(result) {
+            if (result) {
+            showAlert("Запись удалена");
+            } else {
+            showAlert("Удаление отменено");
+            }
+        });
+        }
+
+    </script>
+</body>
+</html>

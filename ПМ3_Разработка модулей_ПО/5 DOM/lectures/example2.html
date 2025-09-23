@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>window и BOM</title>
+</head>
+<body>
+  <button onclick="showInfo()">Показать данные</button>
+  <script>
+    function showInfo() {
+      console.log("URL: " + location.href);
+        console.log("title: " + window.document.title); 
+        console.log("Браузер: " + navigator.userAgent);
+        console.log("История: " + history.length);
+    }
+  </script>
+</body>
+</html>
