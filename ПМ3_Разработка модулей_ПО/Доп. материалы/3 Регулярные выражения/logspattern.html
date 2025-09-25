@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Анализатор логов веб-сервера</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-family: monospace;
+    }
+    button {
+      margin: 5px;
+      padding: 10px;
+      cursor: pointer;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Анализатор логов</h1>
+  <p>Вставьте логи веб-сервера или загрузите тестовые.</p>
+
+  <button onclick="loadDemoLogs()">Загрузить демо-логи</button><br><br>
+
+  <textarea id="logInput"></textarea><br>
+
+  <button onclick="findIPs()">Найти все IP-адреса</button>
+  <button onclick="findPeakHours()">Пиковые часы активности</button>
+  <button onclick="findErrorCodes()">Извлечь коды ошибок (4xx, 5xx)</button>
+  <button onclick="findImages()">Найти запросы к изображениям</button>
+  <button onclick="find404Pages()">Проблемные страницы (404)</button>
+
+  <div id="output">Результаты появятся здесь...</div>
+
+  <script>
+    // --- Вспомогательные функции ---
+    function loadDemoLogs() {
+      fetch("https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/apache_logs/apache_logs")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("logInput").value = data;
+          showResult("Демо-логи успешно загружены!");
+        })
+        .catch(err => showResult("Ошибка загрузки логов: " + err));
+    }
+
+    function getLogs() {
+      return document.getElementById("logInput").value.split("\n");
+    }
+
+    function showResult(result) {
+      document.getElementById("output").innerText = result;
+    }
+
+    // --- 1. Найти все IP-адреса + статистика по запросам (готовая функция) ---
+    function findIPs() {
+      const logs = getLogs();
+      const regex = /^(\d{1,3}(?:\.\d{1,3}){3})/;
+      let ipStats = {};
+
+      logs.forEach(line => {
+        let match = line.match(regex);
+        if (match) {
+          let ip = match[1];
+          ipStats[ip] = (ipStats[ip] || 0) + 1;
+        }
+      });
+
+      let sorted = Object.entries(ipStats).sort((a,b)=>b[1]-a[1]);
+      let output = "IP-адреса и количество запросов:\n\n";
+      sorted.forEach(([ip, count]) => {
+        output += `${ip} — ${count} запросов\n`;
+      });
+
+      showResult(output);
+    }
+
+    // --- 2. Пиковые часы активности ---
+    function findPeakHours() {
+      // Алгоритм:
+      // 1. Из каждой строки извлечь время (часы) с помощью RegExp.
+      // 2. Посчитать количество запросов для каждого часа.
+      // 3. Найти час с максимальной активностью.
+      // 4. Вывести статистику (можно в виде JSON или списка).
+    }
+
+    // --- 3. Статистика по кодам ошибок ---
+    function findErrorCodes() {
+      // Алгоритм:
+      // 1. Найти все HTTP статус-коды (трёхзначные числа после кавычек).
+      // 2. Разделить их по категориям: 2xx, 3xx, 4xx, 5xx.
+      // 3. Посчитать количество в каждой категории.
+      // 4. Определить долю ошибок (4xx + 5xx) от общего числа.
+    }
+
+    // --- 4. Запросы к изображениям ---
+    function findImages() {
+      // Алгоритм:
+      // 1. Найти все строки, содержащие файлы с расширением .png, .jpg, .gif, .ico.
+      // 2. Сохранить найденные URL.
+      // 3. Вывести список найденных изображений.
+    }
+
+    // --- 5. Проблемные страницы (404) ---
+    function find404Pages() {
+      // Алгоритм:
+      // 1. Найти все строки, где статус-код равен 404.
+      // 2. Извлечь URL страницы из запроса.
+      // 3. Посчитать, сколько раз каждая страница возвращала 404.
+      // 4. Вывести список самых проблемных страниц.
+    }
+  </script>
+</body>
+</html>
