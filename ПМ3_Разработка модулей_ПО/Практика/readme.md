@@ -1,25 +1,7 @@
 # Интернет-магазин (учебный проект)
 
 # 📂 Структура проекта интернет-магазина (на Fake Store API)
-/project-root
-│
-├── index.html       // Главная + каталог
-├── product.html     // Страница товара
-├── cart.html        // Корзина
-├── auth.html        // Вход / регистрация
-│
-├── /css
-│   └── style.css    // Стили
-│
-├── /js
-│   ├── api.js       // Работа с API
-│   ├── models.js    // Классы (User, Product, Cart, CartItem)
-│   ├── catalog.js   // Логика главной страницы
-│   ├── product.js   // Логика страницы товара
-│   ├── cart.js      // Логика корзины
-│   ├── auth.js      // Логика входа/регистрации
-│   └── common.js    // Общие функции (шапка, проверка авторизации)
-
+![N|Solid](https://github.com/ShViktor72/Assets/blob/main/other/structure.png)
 
 ## /js/models.js
 # Классы, которые описывают объекты проекта.
