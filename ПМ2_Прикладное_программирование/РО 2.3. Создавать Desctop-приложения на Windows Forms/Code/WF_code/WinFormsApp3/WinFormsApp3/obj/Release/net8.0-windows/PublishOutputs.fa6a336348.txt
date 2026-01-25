@@ -1,0 +1,5 @@
+C:\Users\User\source\repos\WinFormsApp3\WinFormsApp3\bin\Release\net8.0-windows\publish\WinFormsApp3.exe
+C:\Users\User\source\repos\WinFormsApp3\WinFormsApp3\bin\Release\net8.0-windows\publish\WinFormsApp3.dll
+C:\Users\User\source\repos\WinFormsApp3\WinFormsApp3\bin\Release\net8.0-windows\publish\WinFormsApp3.deps.json
+C:\Users\User\source\repos\WinFormsApp3\WinFormsApp3\bin\Release\net8.0-windows\publish\WinFormsApp3.runtimeconfig.json
+C:\Users\User\source\repos\WinFormsApp3\WinFormsApp3\bin\Release\net8.0-windows\publish\WinFormsApp3.pdb
