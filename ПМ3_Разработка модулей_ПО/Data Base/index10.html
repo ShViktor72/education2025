@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <body>
+    <h1>Товары из Firebase</h1>
+    <div id="output"></div>
+    <!--  Подключение Firebase SDK через CDN -->
+    <script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+      // Конфигурация (замените на свою!)
+      const firebaseConfig = {
+        apiKey: "",
+        authDomain: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: "",
+        appId: "",
+      };
+
+      // Подключение
+      const app = firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      console.log("Firestore подключен!");
+
+      // Загрузка данных
+      db.collection("products")
+        .get()
+        .then((snapshot) => {
+          const output = document.getElementById("output");
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            output.innerHTML += `<p>${data.name}: $${data.price}</p>`;
+          });
+        })
+        .catch((error) => {
+          console.error("Ошибка:", error);
+          document.getElementById("output").innerHTML = "Ошибка загрузки";
+        });
+    </script>
+  </body>
+</html>

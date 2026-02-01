@@ -1,0 +1,433 @@
+<!doctype html>
+<html>
+<head>
+    <title>Мой проект с авторизацией</title>
+    <style>
+        /* Стили для аутентификации */
+        .hidden { display: none; }
+        .auth-form {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .auth-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .auth-form button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .auth-form button:hover {
+            background: #3367d6;
+        }
+        .error {
+            color: #d93025;
+            background: #fce8e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .user-info {
+            background: #e8f0fe;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .auth-btn {
+            background: #4285f4;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .logout-btn {
+            background: #ea4335;
+        }
+        .welcome {
+            color: #1a73e8;
+            font-weight: bold;
+        }
+        .success {
+            color: #188038;
+            background: #e6f4ea;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка с кнопками аутентификации -->
+    <div class="header">
+        <h1>Товары из Firebase</h1>
+        <div id="auth-controls">
+            <span id="welcome-message" class="welcome hidden"></span>
+            <button id="show-auth-btn" class="auth-btn">Войти / Регистрация</button>
+            <button id="logout-btn" class="auth-btn logout-btn hidden">Выйти</button>
+        </div>
+    </div>
+
+    <!-- Формы аутентификации (изначально скрыты) -->
+    <div id="auth-container" class="auth-form hidden">
+        <h3 id="auth-title">Вход в систему</h3>
+        
+        <input type="email" id="auth-email" placeholder="Ваш email">
+        <input type="password" id="auth-password" placeholder="Пароль (минимум 6 символов)">
+        
+        <div id="auth-error" class="error hidden"></div>
+        <div id="auth-success" class="success hidden"></div>
+        
+        <button id="signin-btn">Войти</button>
+        <button id="signup-btn">Зарегистрироваться</button>
+        <button id="cancel-auth-btn">Отмена</button>
+    </div>
+
+    <!-- Личный кабинет (только для авторизованных) -->
+    <div id="user-profile" class="user-info hidden">
+        <h3>Личный кабинет</h3>
+        <p><strong>Email:</strong> <span id="user-email"></span></p>
+        <p><strong>ID:</strong> <span id="user-id"></span></p>
+        <p><strong>Дата регистрации:</strong> <span id="user-created"></span></p>
+        <p><strong>Роль:</strong> <span id="user-role"></span></p>
+    </div>
+
+    <!-- Основной контент (товары) -->
+    <div id="output">Загрузка товаров...</div>
+
+    <!-- Подключение Firebase SDK через CDN -->
+    <script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore-compat.js"></script>
+    <!-- ДОБАВЛЕНО: Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // 1. КОНФИГУРАЦИЯ FIREBASE (замените на свою!)
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "",
+            projectId: "",
+            storageBucket: "",
+            messagingSenderId: "",
+            appId: "",
+        };
+
+        // 2. ИНИЦИАЛИЗАЦИЯ FIREBASE
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth(); // <-- ДОБАВЛЕНО: объект аутентификации
+
+        console.log("Firebase инициализирован!");
+
+        // 3. ПЕРЕМЕННЫЕ ДЛЯ UI
+        const authContainer = document.getElementById('auth-container');
+        const showAuthBtn = document.getElementById('show-auth-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const userProfile = document.getElementById('user-profile');
+        const output = document.getElementById('output');
+
+        // 4. ПОКАЗАТЬ/СКРЫТЬ СООБЩЕНИЯ
+        function showError(message) {
+            const errorDiv = document.getElementById('auth-error');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            document.getElementById('auth-success').classList.add('hidden');
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('auth-success');
+            successDiv.textContent = message;
+            successDiv.classList.remove('hidden');
+            document.getElementById('auth-error').classList.add('hidden');
+        }
+
+        function hideMessages() {
+            document.getElementById('auth-error').classList.add('hidden');
+            document.getElementById('auth-success').classList.add('hidden');
+        }
+
+        // 5. РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ
+        async function registerUser(email, password) {
+            hideMessages();
+            
+            try {
+                // Создаем пользователя в Firebase Authentication
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Сохраняем дополнительные данные в Firestore
+                await db.collection('users').doc(user.uid).set({
+                    email: user.email,
+                    displayName: '', // Можно добавить поле для имени
+                    createdAt: new Date().toISOString(),
+                    role: 'user', // Роль по умолчанию
+                    lastLogin: new Date().toISOString()
+                });
+                
+                showSuccess('Регистрация успешна!');
+                console.log('Пользователь зарегистрирован:', user.email);
+                
+                // Очищаем поля формы
+                document.getElementById('auth-email').value = '';
+                document.getElementById('auth-password').value = '';
+                
+            } catch (error) {
+                console.error('Ошибка регистрации:', error.code);
+                
+                // сообщения об ошибках
+                switch(error.code) {
+                    case 'auth/email-already-in-use':
+                        showError('Этот email уже используется');
+                        break;
+                    case 'auth/invalid-email':
+                        showError('Неверный формат email');
+                        break;
+                    case 'auth/weak-password':
+                        showError('Пароль должен содержать минимум 6 символов');
+                        break;
+                    default:
+                        showError('Ошибка регистрации: ' + error.message);
+                }
+            }
+        }
+
+        // 6. ВХОД ПОЛЬЗОВАТЕЛЯ
+        async function loginUser(email, password) {
+            hideMessages();
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Обновляем время последнего входа
+                await db.collection('users').doc(user.uid).update({
+                    lastLogin: new Date().toISOString()
+                });
+                
+                showSuccess('Вход выполнен успешно!');
+                console.log('Пользователь вошел:', user.email);
+                
+                // Очищаем поля формы
+                document.getElementById('auth-email').value = '';
+                document.getElementById('auth-password').value = '';
+                
+            } catch (error) {
+                console.error('Ошибка входа:', error.code);
+                
+                switch(error.code) {
+                    case 'auth/user-not-found':
+                        showError('Пользователь не найден');
+                        break;
+                    case 'auth/wrong-password':
+                        showError('Неверный пароль');
+                        break;
+                    case 'auth/invalid-email':
+                        showError('Неверный формат email');
+                        break;
+                    case 'auth/user-disabled':
+                        showError('Аккаунт отключен');
+                        break;
+                    default:
+                        showError('Ошибка входа: ' + error.message);
+                }
+            }
+        }
+
+        // 7. ВЫХОД ПОЛЬЗОВАТЕЛЯ
+        async function logoutUser() {
+            try {
+                await auth.signOut();
+                console.log('Пользователь вышел');
+            } catch (error) {
+                console.error('Ошибка выхода:', error);
+                showError('Ошибка при выходе из системы');
+            }
+        }
+
+        // 8. ОТСЛЕЖИВАНИЕ СОСТОЯНИЯ АВТОРИЗАЦИИ
+        auth.onAuthStateChanged(async (user) => {
+            console.log('Состояние авторизации изменилось:', user ? user.email : 'null');
+            
+            if (user) {
+                // ПОЛЬЗОВАТЕЛЬ ВОШЕЛ
+                updateUIForLoggedInUser(user);
+                
+                // Загружаем данные профиля из Firestore
+                try {
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        updateUserProfileUI(user, userData);
+                    }
+                } catch (error) {
+                    console.error('Ошибка загрузки профиля:', error);
+                }
+                
+            } else {
+                // ПОЛЬЗОВАТЕЛЬ ВЫШЕЛ ИЛИ НЕ АВТОРИЗОВАН
+                updateUIForGuest();
+            }
+            
+            // Всегда загружаем товары (и для гостей тоже)
+            loadProducts();
+        });
+
+        // 9. ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
+        function updateUIForLoggedInUser(user) {
+            // Обновляем шапку
+            welcomeMessage.textContent = `Привет, ${user.email.split('@')[0]}!`;
+            welcomeMessage.classList.remove('hidden');
+            showAuthBtn.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+            
+            // Показываем личный кабинет
+            userProfile.classList.remove('hidden');
+            
+            // Скрываем форму авторизации
+            authContainer.classList.add('hidden');
+        }
+
+        function updateUIForGuest() {
+            // Обновляем шапку
+            welcomeMessage.classList.add('hidden');
+            showAuthBtn.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+            
+            // Скрываем личный кабинет
+            userProfile.classList.add('hidden');
+            
+            // Скрываем форму авторизации
+            authContainer.classList.add('hidden');
+            
+            // Очищаем поля формы
+            document.getElementById('auth-email').value = '';
+            document.getElementById('auth-password').value = '';
+            hideMessages();
+        }
+
+        function updateUserProfileUI(user, userData) {
+            // Заполняем данные в личном кабинете
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('user-id').textContent = user.uid;
+            
+            if (userData.createdAt) {
+                const date = new Date(userData.createdAt);
+                document.getElementById('user-created').textContent = 
+                    date.toLocaleDateString('ru-RU');
+            }
+            
+            document.getElementById('user-role').textContent = userData.role || 'user';
+        }
+
+        // 10. ЗАГРУЗКА ТОВАРОВ (из предыдущей лабы)
+        function loadProducts() {
+            output.innerHTML = 'Загрузка товаров...';
+            
+            db.collection("products")
+                .get()
+                .then((snapshot) => {
+                    output.innerHTML = '';
+                    
+                    if (snapshot.empty) {
+                        output.innerHTML = '<p>Товары не найдены</p>';
+                        return;
+                    }
+                    
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        output.innerHTML += `<p>${data.name}: $${data.price}</p>`;
+                    });
+                })
+                .catch((error) => {
+                    console.error("Ошибка загрузки товаров:", error);
+                    output.innerHTML = '<p class="error">Ошибка загрузки товаров</p>';
+                });
+        }
+
+        // 11. ОБРАБОТЧИКИ СОБЫТИЙ
+        // Кнопка "Войти / Регистрация"
+        showAuthBtn.addEventListener('click', () => {
+            authContainer.classList.remove('hidden');
+            hideMessages();
+        });
+
+        // Кнопка "Отмена" в форме
+        document.getElementById('cancel-auth-btn').addEventListener('click', () => {
+            authContainer.classList.add('hidden');
+            hideMessages();
+        });
+
+        // Кнопка "Войти"
+        document.getElementById('signin-btn').addEventListener('click', () => {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            
+            if (!email || !password) {
+                showError('Введите email и пароль');
+                return;
+            }
+            
+            loginUser(email, password);
+        });
+
+        // Кнопка "Зарегистрироваться"
+        document.getElementById('signup-btn').addEventListener('click', () => {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            
+            if (!email || !password) {
+                showError('Введите email и пароль');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('Пароль должен содержать минимум 6 символов');
+                return;
+            }
+            
+            registerUser(email, password);
+        });
+
+        // Кнопка "Выйти"
+        logoutBtn.addEventListener('click', logoutUser);
+
+        // Нажатие Enter в полях формы
+        document.getElementById('auth-password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const email = document.getElementById('auth-email').value;
+                const password = document.getElementById('auth-password').value;
+                loginUser(email, password);
+            }
+        });
+
+        // 12. ЗАГРУЗКА ТОВАРОВ ПРИ СТАРТЕ
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Страница загружена');
+            loadProducts();
+        });
+    </script>
+</body>
+</html>
