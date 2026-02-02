@@ -1,0 +1,694 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Мой проект с авторизацией</title>
+    <style>
+      /* Стили для аутентификации */
+      .hidden {
+        display: none;
+      }
+      .auth-form {
+        background: #f5f5f5;
+        padding: 20px;
+        margin: 20px auto;
+        max-width: 400px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .auth-form input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+      .auth-form button {
+        background: #4285f4;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      .auth-form button:hover {
+        background: #3367d6;
+      }
+      .error {
+        color: #d93025;
+        background: #fce8e6;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .user-info {
+        background: #e8f0fe;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 10px;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 20px;
+      }
+      .auth-btn {
+        background: #4285f4;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+      .logout-btn {
+        background: #ea4335;
+      }
+      .welcome {
+        color: #1a73e8;
+        font-weight: bold;
+      }
+      .success {
+        color: #188038;
+        background: #e6f4ea;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      /* Стили для админ-панели */
+      .admin-form {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #f9f9f9;
+      }
+
+      .admin-form h4 {
+        margin: 0 0 15px 0;
+        color: #333;
+      }
+
+      .admin-input {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
+
+      .admin-input:focus {
+        outline: none;
+        border-color: #4285f4;
+        box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+      }
+
+      .admin-btn {
+        background: #34a853;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 10px;
+        transition: background 0.2s;
+      }
+
+      .admin-btn:hover {
+        background: #2d9249;
+      }
+
+      .admin-btn:active {
+        background: #267c3e;
+      }
+
+      /* Стили для товаров */
+      .product-item {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        background: white;
+      }
+
+      .product-item h3 {
+        margin: 0 0 10px 0;
+        color: #1a73e8;
+      }
+
+      .delete-btn {
+        background: #ea4335;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 13px;
+        margin-top: 10px;
+        transition: background 0.2s;
+      }
+
+      .delete-btn:hover {
+        background: #d93025;
+      }
+
+      .delete-btn:active {
+        background: #c5221f;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Шапка с кнопками аутентификации -->
+    <div class="header">
+      <h1>Товары из Firebase</h1>
+      <div id="auth-controls">
+        <span id="welcome-message" class="welcome hidden"></span>
+        <button id="show-auth-btn" class="auth-btn">Войти / Регистрация</button>
+        <button id="logout-btn" class="auth-btn logout-btn hidden">
+          Выйти
+        </button>
+      </div>
+    </div>
+
+    <!-- Формы аутентификации (изначально скрыты) -->
+    <div id="auth-container" class="auth-form hidden">
+      <h3 id="auth-title">Вход в систему</h3>
+
+      <input type="email" id="auth-email" placeholder="Ваш email" />
+      <input
+        type="password"
+        id="auth-password"
+        placeholder="Пароль (минимум 6 символов)"
+      />
+
+      <div id="auth-error" class="error hidden"></div>
+      <div id="auth-success" class="success hidden"></div>
+
+      <button id="signin-btn">Войти</button>
+      <button id="signup-btn">Зарегистрироваться</button>
+      <button id="cancel-auth-btn">Отмена</button>
+    </div>
+
+    <!-- Личный кабинет (только для авторизованных) -->
+    <div id="user-profile" class="user-info hidden">
+      <h3>Личный кабинет</h3>
+      <p><strong>Email:</strong> <span id="user-email"></span></p>
+      <p><strong>ID:</strong> <span id="user-id"></span></p>
+      <p><strong>Дата регистрации:</strong> <span id="user-created"></span></p>
+      <p><strong>Роль:</strong> <span id="user-role"></span></p>
+    </div>
+
+    <!-- Панель администратора и Форма добавления товара -->
+    <div id="admin-controls" class="hidden">
+    <h3>Панель администратора</h3>
+    
+    <!-- Форма добавления товара -->
+        <div class="admin-form">
+            <h4>Добавить новый товар</h4>
+            <input type="text" id="new-product-name" placeholder="Название товара" class="admin-input">
+            <input type="number" id="new-product-price" placeholder="Цена" step="0.01" class="admin-input">
+            <button id="add-product-btn" class="admin-btn">
+            Добавить товар
+            </button>
+        </div>
+    </div>
+
+    <!-- Основной контент (товары) -->
+    <div id="output">Загрузка товаров...</div>
+
+    <!-- Подключение Firebase SDK через CDN -->
+    <script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore-compat.js"></script>
+    <!-- ДОБАВЛЕНО: Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-auth-compat.js"></script>
+
+    <script>
+      // 1. КОНФИГУРАЦИЯ FIREBASE (замените на свою!)
+
+      const firebaseConfig = {
+        apiKey: "",
+        authDomain: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: "",
+        appId: "",
+      };
+
+      // 2. ИНИЦИАЛИЗАЦИЯ FIREBASE
+      const app = firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      const auth = firebase.auth(); // <-- ДОБАВЛЕНО: объект аутентификации
+
+      console.log("Firebase инициализирован!");
+
+      // 3. ПЕРЕМЕННЫЕ ДЛЯ UI
+      const authContainer = document.getElementById("auth-container");
+      const showAuthBtn = document.getElementById("show-auth-btn");
+      const logoutBtn = document.getElementById("logout-btn");
+      const welcomeMessage = document.getElementById("welcome-message");
+      const userProfile = document.getElementById("user-profile");
+      const output = document.getElementById("output");
+
+      // 13. ПЕРЕМЕННЫЕ ДЛЯ АДМИН-ПАНЕЛИ
+      const adminControls = document.getElementById("admin-controls");
+      let currentUserRole = "user";
+
+      // 4. ПОКАЗАТЬ/СКРЫТЬ СООБЩЕНИЯ
+      function showError(message) {
+        const errorDiv = document.getElementById("auth-error");
+        errorDiv.textContent = message;
+        errorDiv.classList.remove("hidden");
+        document.getElementById("auth-success").classList.add("hidden");
+      }
+
+      function showSuccess(message) {
+        const successDiv = document.getElementById("auth-success");
+        successDiv.textContent = message;
+        successDiv.classList.remove("hidden");
+        document.getElementById("auth-error").classList.add("hidden");
+      }
+
+      function hideMessages() {
+        document.getElementById("auth-error").classList.add("hidden");
+        document.getElementById("auth-success").classList.add("hidden");
+      }
+
+      // 5. РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ
+      async function registerUser(email, password) {
+        hideMessages();
+
+        try {
+          // Создаем пользователя в Firebase Authentication
+          const userCredential = await auth.createUserWithEmailAndPassword(
+            email,
+            password,
+          );
+          const user = userCredential.user;
+
+          // Сохраняем дополнительные данные в Firestore
+          await db.collection("users").doc(user.uid).set({
+            email: user.email,
+            displayName: "", // Можно добавить поле для имени
+            createdAt: new Date().toISOString(),
+            role: "user", // Роль по умолчанию
+            lastLogin: new Date().toISOString(),
+          });
+
+          showSuccess("Регистрация успешна!");
+          console.log("Пользователь зарегистрирован:", user.email);
+
+          // Очищаем поля формы
+          document.getElementById("auth-email").value = "";
+          document.getElementById("auth-password").value = "";
+        } catch (error) {
+          console.error("Ошибка регистрации:", error.code);
+
+          // Понятные сообщения об ошибках
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              showError("Этот email уже используется");
+              break;
+            case "auth/invalid-email":
+              showError("Неверный формат email");
+              break;
+            case "auth/weak-password":
+              showError("Пароль должен содержать минимум 6 символов");
+              break;
+            default:
+              showError("Ошибка регистрации: " + error.message);
+          }
+        }
+      }
+
+      // 6. ВХОД ПОЛЬЗОВАТЕЛЯ
+      async function loginUser(email, password) {
+        hideMessages();
+
+        try {
+          const userCredential = await auth.signInWithEmailAndPassword(
+            email,
+            password,
+          );
+          const user = userCredential.user;
+
+          // Обновляем время последнего входа
+          await db.collection("users").doc(user.uid).update({
+            lastLogin: new Date().toISOString(),
+          });
+
+          showSuccess("Вход выполнен успешно!");
+          console.log("Пользователь вошел:", user.email);
+
+          // Очищаем поля формы
+          document.getElementById("auth-email").value = "";
+          document.getElementById("auth-password").value = "";
+        } catch (error) {
+          console.error("Ошибка входа:", error.code);
+
+          switch (error.code) {
+            case "auth/user-not-found":
+              showError("Пользователь не найден");
+              break;
+            case "auth/wrong-password":
+              showError("Неверный пароль");
+              break;
+            case "auth/invalid-email":
+              showError("Неверный формат email");
+              break;
+            case "auth/user-disabled":
+              showError("Аккаунт отключен");
+              break;
+            default:
+              showError("Ошибка входа: " + error.message);
+          }
+        }
+      }
+
+      // 7. ВЫХОД ПОЛЬЗОВАТЕЛЯ
+      async function logoutUser() {
+        try {
+          await auth.signOut();
+          console.log("Пользователь вышел");
+        } catch (error) {
+          console.error("Ошибка выхода:", error);
+          showError("Ошибка при выходе из системы");
+        }
+      }
+
+      // 8. ОТСЛЕЖИВАНИЕ СОСТОЯНИЯ АВТОРИЗАЦИИ
+      auth.onAuthStateChanged(async (user) => {
+        console.log(
+          "Состояние авторизации изменилось:",
+          user ? user.email : "null",
+        );
+
+        if (user) {
+          // ПОЛЬЗОВАТЕЛЬ ВОШЕЛ
+          updateUIForLoggedInUser(user);
+
+          // Загружаем данные профиля из Firestore
+          try {
+            const userDoc = await db.collection("users").doc(user.uid).get();
+            if (userDoc.exists) {
+              const userData = userDoc.data();
+              updateUserProfileUI(user, userData);
+            }
+          } catch (error) {
+            console.error("Ошибка загрузки профиля:", error);
+          }
+        } else {
+          // ПОЛЬЗОВАТЕЛЬ ВЫШЕЛ ИЛИ НЕ АВТОРИЗОВАН
+          updateUIForGuest();
+        }
+
+        // Всегда загружаем товары (и для гостей тоже)
+        loadProducts();
+      });
+
+      // 9. ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
+      async function updateUIForLoggedInUser(user) {
+        // Обновляем шапку
+        welcomeMessage.textContent = `Привет, ${user.email.split("@")[0]}!`;
+        welcomeMessage.classList.remove("hidden");
+        showAuthBtn.classList.add("hidden");
+        logoutBtn.classList.remove("hidden");
+
+        // Показываем личный кабинет
+        userProfile.classList.remove("hidden");
+
+        // Скрываем форму авторизации
+        authContainer.classList.add("hidden");
+
+        // Проверяем роль пользователя
+        currentUserRole = await checkUserRole(user.uid);
+
+        // Если админ - показываем панель, иначе - скрываем
+        if (currentUserRole === "admin") {
+          adminControls.classList.remove("hidden");
+          document.getElementById("user-role").textContent = "👑 Администратор";
+        } else {
+          adminControls.classList.add("hidden"); // ← ДОБАВИТЬ ЭТУ СТРОКУ
+          document.getElementById("user-role").textContent = "👤 Пользователь";
+        }
+      }
+
+      function updateUIForGuest() {
+        // Обновляем шапку
+        welcomeMessage.classList.add("hidden");
+        showAuthBtn.classList.remove("hidden");
+        logoutBtn.classList.add("hidden");
+
+        // Скрываем личный кабинет
+        userProfile.classList.add("hidden");
+
+        // Скрываем форму авторизации
+        authContainer.classList.add("hidden");
+
+        // Очищаем поля формы
+        document.getElementById("auth-email").value = "";
+        document.getElementById("auth-password").value = "";
+        hideMessages();
+      }
+
+      function updateUserProfileUI(user, userData) {
+        // Заполняем данные в личном кабинете
+        document.getElementById("user-email").textContent = user.email;
+        document.getElementById("user-id").textContent = user.uid;
+
+        if (userData.createdAt) {
+          const date = new Date(userData.createdAt);
+          document.getElementById("user-created").textContent =
+            date.toLocaleDateString("ru-RU");
+        }
+
+        document.getElementById("user-role").textContent =
+          userData.role || "user";
+      }
+
+      // 10. ЗАГРУЗКА ТОВАРОВ
+      function loadProducts() {
+        output.innerHTML = "Загрузка товаров...";
+
+        db.collection("products")
+          .get()
+          .then((snapshot) => {
+            output.innerHTML = "";
+
+            if (snapshot.empty) {
+              output.innerHTML = "<p>Товары не найдены</p>";
+              return;
+            }
+
+            snapshot.forEach((doc) => {
+              const data = doc.data();
+              const productId = doc.id;
+
+              // Создаем блок товара
+              const productDiv = document.createElement("div");
+              productDiv.className = "product-item";
+              productDiv.style.border = "1px solid #ddd";
+              productDiv.style.padding = "15px";
+              productDiv.style.margin = "10px 0";
+              productDiv.style.borderRadius = "5px";
+
+              // Базовая информация
+              productDiv.innerHTML = `
+                <h3 style="margin: 0 0 10px 0;">${data.name || "Без названия"}</h3>
+                <p style="margin: 5px 0;"><strong>Цена:</strong> $${data.price || "0"}</p>
+                <p style="margin: 5px 0; color: #666; font-size: 14px;">
+                    Добавлен: ${data.createdBy || "неизвестно"}
+                </p>
+                `;
+
+              // Кнопка удаления (только для админа)
+              if (currentUserRole === "admin") {
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "Удалить";
+                deleteBtn.style.background = "#ea4335";
+                deleteBtn.style.color = "white";
+                deleteBtn.style.border = "none";
+                deleteBtn.style.padding = "5px 10px";
+                deleteBtn.style.borderRadius = "3px";
+                deleteBtn.style.cursor = "pointer";
+                deleteBtn.style.marginTop = "10px";
+                deleteBtn.onclick = function () {
+                  deleteProduct(productId);
+                };
+
+                productDiv.appendChild(deleteBtn);
+              }
+
+              output.appendChild(productDiv);
+            });
+          })
+          .catch((error) => {
+            console.error("Ошибка загрузки товаров:", error);
+            output.innerHTML =
+              '<p style="color: red;">Ошибка загрузки товаров</p>';
+          });
+      }
+
+      // 11. ОБРАБОТЧИКИ СОБЫТИЙ
+      // Кнопка "Войти / Регистрация"
+      showAuthBtn.addEventListener("click", () => {
+        authContainer.classList.remove("hidden");
+        hideMessages();
+      });
+
+      // Кнопка "Отмена" в форме
+      document
+        .getElementById("cancel-auth-btn")
+        .addEventListener("click", () => {
+          authContainer.classList.add("hidden");
+          hideMessages();
+        });
+
+      // Кнопка "Войти"
+      document.getElementById("signin-btn").addEventListener("click", () => {
+        const email = document.getElementById("auth-email").value;
+        const password = document.getElementById("auth-password").value;
+
+        if (!email || !password) {
+          showError("Введите email и пароль");
+          return;
+        }
+
+        loginUser(email, password);
+      });
+
+      // Кнопка "Зарегистрироваться"
+      document.getElementById("signup-btn").addEventListener("click", () => {
+        const email = document.getElementById("auth-email").value;
+        const password = document.getElementById("auth-password").value;
+
+        if (!email || !password) {
+          showError("Введите email и пароль");
+          return;
+        }
+
+        if (password.length < 6) {
+          showError("Пароль должен содержать минимум 6 символов");
+          return;
+        }
+
+        registerUser(email, password);
+      });
+
+      // Кнопка "Выйти"
+      logoutBtn.addEventListener("click", logoutUser);
+
+      // Нажатие Enter в полях формы
+      document
+        .getElementById("auth-password")
+        .addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            const email = document.getElementById("auth-email").value;
+            const password = document.getElementById("auth-password").value;
+            loginUser(email, password);
+          }
+        });
+
+      // 14. ФУНКЦИЯ ПРОВЕРКИ РОЛИ
+      async function checkUserRole(userId) {
+        try {
+          const userDoc = await db.collection("users").doc(userId).get();
+          if (userDoc.exists) {
+            return userDoc.data().role || "user";
+          }
+          return "user";
+        } catch (error) {
+          console.error("Ошибка проверки роли:", error);
+          return "user";
+        }
+      }
+
+      // 16. ФУНКЦИЯ ДОБАВЛЕНИЯ ТОВАРА
+      async function addProduct() {
+        const name = document.getElementById("new-product-name").value.trim();
+        const price = document.getElementById("new-product-price").value;
+
+        // Проверка
+        if (!name || !price) {
+          alert("Введите название и цену товара");
+          return;
+        }
+
+        if (parseFloat(price) <= 0) {
+          alert("Цена должна быть больше 0");
+          return;
+        }
+
+        try {
+          // Добавляем товар в Firestore
+          await db.collection("products").add({
+            name: name,
+            price: parseFloat(price),
+            createdAt: new Date().toISOString(),
+            createdBy: firebase.auth().currentUser.email,
+          });
+
+          alert("Товар добавлен!");
+
+          // Очищаем форму
+          document.getElementById("new-product-name").value = "";
+          document.getElementById("new-product-price").value = "";
+
+          // Обновляем список товаров
+          loadProducts();
+        } catch (error) {
+          console.error("Ошибка добавления товара:", error);
+          alert("Ошибка: " + error.message);
+        }
+      }
+
+      // 18. ФУНКЦИЯ УДАЛЕНИЯ ТОВАРА
+      async function deleteProduct(productId) {
+        if (currentUserRole !== "admin") {
+          alert("Только администратор может удалять товары");
+          return;
+        }
+
+        if (!confirm("Вы уверены, что хотите удалить этот товар?")) {
+          return;
+        }
+
+        try {
+          await db.collection("products").doc(productId).delete();
+          alert("Товар удален");
+          loadProducts(); // Обновляем список
+        } catch (error) {
+          console.error("Ошибка удаления:", error);
+          alert("Ошибка удаления товара");
+        }
+      }
+
+      // 19. ОБРАБОТЧИК СОБЫТИЙ ДЛЯ КНОПКИ ДОБАВЛЕНИЯ
+      document
+        .getElementById("add-product-btn")
+        .addEventListener("click", addProduct);
+
+      // Также по нажатию Enter в поле цены
+      document
+        .getElementById("new-product-price")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            addProduct();
+          }
+        });
+
+      // 12. ЗАГРУЗКА ТОВАРОВ ПРИ СТАРТЕ
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("Страница загружена");
+        loadProducts();
+      });
+    </script>
+  </body>
+</html>

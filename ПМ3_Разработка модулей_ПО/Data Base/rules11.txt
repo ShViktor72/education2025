@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false; // запрещаем ВСЁ
+    }
+    
+    // товары доступны всем для чтения
+    match /products/{productId} {
+      allow read: if true;  // Читать могут все
+      allow write: if false; // Писать никто не может
+    }
+    
+    // Профили пользователей - только свои!
+    match /users/{userId} {
+      allow read, write: if 
+        request.auth != null &&        // Должен быть авторизован
+        request.auth.uid == userId;    // И может работать только со своим профилем
+    }
+  }
+}
