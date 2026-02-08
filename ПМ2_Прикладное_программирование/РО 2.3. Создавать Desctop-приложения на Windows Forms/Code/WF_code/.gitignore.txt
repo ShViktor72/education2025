@@ -1,0 +1,29 @@
+## Build results
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+
+## Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Rider / VSCode
+.idea/
+.vscode/
+
+## Logs
+*.log
+
+## NuGet
+packages/
+*.nupkg
+
+## OS files
+.DS_Store
+Thumbs.db
