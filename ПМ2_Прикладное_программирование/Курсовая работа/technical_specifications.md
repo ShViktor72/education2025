@@ -180,26 +180,6 @@
 - Отправить ссылку на репозиторий и на GitHub Pages преподавателю.
 
 ## 7. Рекомендуемая структура папок:
-my-project/
-│
-├── index.html
-│
-├── form.html
-│
-├── about.html
-│
-├── css/
-│ │
-│ └── style.css
-│
-├── js/
-│ │
-│ ├── main.js // Логика главной страницы
-│ │
-│ ├── form.js // Логика страницы с формой
-│ │
-│ └── storage.js // Работа с localStorage
-│
-├── images/ // Иконки, изображения
-│
-└── README.md // Описание проекта
+
+[![N|Solid](https://github.com/ShViktor72/Assets/blob/main/eduction/structure.jpg?raw=true)]
+
