@@ -181,5 +181,5 @@
 
 ## 7. Рекомендуемая структура папок:
 
-[![N|Solid](https://github.com/ShViktor72/Assets/blob/main/eduction/structure.jpg?raw=true)]
+![N|Solid](https://github.com/ShViktor72/Assets/blob/main/eduction/structure.jpg?raw=true)
 
