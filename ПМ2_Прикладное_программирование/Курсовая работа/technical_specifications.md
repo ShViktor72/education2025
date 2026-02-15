@@ -183,13 +183,23 @@
 my-project/
 │
 ├── index.html
+│
 ├── form.html
+│
 ├── about.html
+│
 ├── css/
+│ │
 │ └── style.css
+│
 ├── js/
+│ │
 │ ├── main.js // Логика главной страницы
+│ │
 │ ├── form.js // Логика страницы с формой
+│ │
 │ └── storage.js // Работа с localStorage
+│
 ├── images/ // Иконки, изображения
+│
 └── README.md // Описание проекта
