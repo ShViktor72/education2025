@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .no-marker {
+        list-style-type: none; 
+        padding: 0; 
+        margin: 0; 
+      }
+
+      div {
+        width: 300px;
+        border: 1px solid;
+        margin: 5px;
+        padding: 5px;
+      }
+    </style>
+    <script src="main.js" defer></script>
+  </head>
+  <body>
+    <h1>Список покупок</h1>
+
+    <form id="shop-form">
+      <input type="text" id="item-input" placeholder="Что купить?" required />
+      <button type="submit">Добавить</button>
+    </form>
+
+    <ul id="list-container" class="no-marker"></ul>
+    <button id="clear-btn">Очистить список</button>
+
+    <script>
+      // 1. ИНИЦИАЛИЗАЦИЯ ДАННЫХ
+      // Пытаемся загрузить данные, если их нет — используем пустой массив
+      const rawData = localStorage.getItem("shopping_list");
+      let items = rawData ? JSON.parse(rawData) : [];
+
+      // Ссылки на элементы DOM
+      const form = document.querySelector("#shop-form");
+      const input = document.querySelector("#item-input");
+      const container = document.querySelector("#list-container");
+      const clearBtn = document.querySelector("#clear-btn");
+
+      // Функция сохранения данных в localStorage
+      function save() {
+        // Превращаем массив объектов в JSON-строку
+        localStorage.setItem("shopping_list", JSON.stringify(items));
+      }
+
+      // Функция отрисовки интерфейса
+      function render() {
+        container.innerHTML = ""; // Очищаем список перед перерисовкой
+        items.forEach((product) => {
+          const li = document.createElement("li"); // Создаём элемент списка
+          li.className = "item";
+          // Добавляем текст в элемент списка
+          li.innerHTML = `
+            <div>
+                <span>${product.title}</span>
+            </div>`;
+          container.appendChild(li); // Добавляем элемент в контейнер
+        });
+      }
+
+      // Добавление нового товара
+      form.addEventListener("submit", (e) => {
+        e.preventDefault(); // Отмена перезагрузки страницы
+        const newItem = {
+          title: input.value,
+        };
+        items.push(newItem); // Добавляем в массив
+        save(); // Сохраняем в localStorage
+        render(); // Обновляем экран
+        input.value = ""; // Очищаем поле ввода
+      });
+
+      // Полная очистка
+      clearBtn.addEventListener("click", () => {
+        if (confirm("Очистить весь список?")) {
+          items = []; // Очищаем массив
+          localStorage.removeItem("shopping_list"); // Удаляем данные из localStorage (или можно использовать localStorage.clear())
+          render(); // Обновляем интерфейс
+        }
+      });
+
+      // 3. ЗАПУСК ПРИ СТАРТЕ
+      // Вызываем рендер сразу, чтобы показать сохраненные данные
+      render();
+    </script>
+  </body>
+</html>
