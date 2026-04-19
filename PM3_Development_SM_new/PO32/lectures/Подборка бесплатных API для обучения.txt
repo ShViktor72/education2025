@@ -1,0 +1,90 @@
+📝 Подборка бесплатных API для обучения
+🔹 1. httpbin
+👉 https://httpbin.org
+Классика для тренировки HTTP-запросов.
+/get, /post, /headers, /cookies, /status/404, /delay/3 и др.
+Возвращает всё, что вы отправили (query string, заголовки, тело).
+
+🔹 2. Reqres
+👉 https://reqres.in
+Фейковое REST API с реальными примерами запросов.
+GET список пользователей: /api/users?page=2
+POST создание пользователя: /api/users
+PUT/PATCH обновление: /api/users/2
+DELETE удаление: /api/users/2
+
+🔹 3. JSONPlaceholder
+👉 https://jsonplaceholder.typicode.com
+Популярное «фейковое» API для фронтенд-разработчиков.
+GET /posts, GET /posts/1
+POST /posts (создание записи)
+GET /users, GET /todos
+
+🔹 4. DummyJSON
+👉 https://dummyjson.com
+API с реальными объектами (посты, пользователи, товары).
+GET /products (товары)
+GET /users
+POST /auth/login (логин с тестовыми данными)
+
+🔹 5. Open Meteo (погода)
+👉 https://open-meteo.com
+Бесплатное погодное API без ключей.
+Пример:
+https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m
+
+🔹 6. PokéAPI
+👉 https://pokeapi.co
+API для фанатов Pokémon 🙂
+GET /api/v2/pokemon/ditto
+GET /api/v2/pokemon?limit=10
+
+🔹 7. SWAPI (Star Wars API)
+👉 https://swapi.dev
+База данных по вселенной Star Wars.
+GET /people/1/ (Люк Скайуокер)
+GET /planets/3/ (Явин IV)
+
+🔹 8. The Cat API / Dog API
+👉 https://thecatapi.com
+👉 https://dog.ceo/dog-api
+Для развлечения: котики и собачки 🐱🐶
+GET https://api.thecatapi.com/v1/images/search
+GET https://dog.ceo/api/breeds/image/random
+
+Примеры запросов:
+🔹 1. Фильтрация и сортировка
+DummyJSON (товары)
+https://dummyjson.com/products/category/smartphones?limit=3&sort=price
+
+👉 вернёт товары из категории smartphones, ограничит 3 штуками, отсортирует по цене.
+
+🔹 2. Поиск
+JSONPlaceholder (фейковые посты)
+https://jsonplaceholder.typicode.com/posts?userId=1&q=sunt
+
+👉 вернёт посты пользователя с userId=1, где встречается sunt.
+
+Open Library (книги)
+https://openlibrary.org/search.json?q=matrix
+
+👉 поиск книг по слову «matrix».
+
+🔹 3. Передача небольших данных (пагинация, лимит)
+Reqres (пользователи)
+https://reqres.in/api/users?page=2&per_page=3
+
+👉 в ответе будут пользователи со второй страницы, по 3 на страницу.
+
+PokéAPI
+https://pokeapi.co/api/v2/pokemon?limit=5&offset=10
+
+👉 вернёт 5 покемонов, начиная с 11-го.
+
+🔹 4. Использование в GET и POST
+Иногда параметры передаются и в query string, и в теле POST.
+Пример (httpbin):
+POST https://httpbin.org/post?token=123
+Body: { "username": "neo" }
+
+👉 token=123 идёт в query string, а username=neo — в теле запроса.

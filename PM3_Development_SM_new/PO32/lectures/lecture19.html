@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookies Example</title>
+</head>
+<body>
+    <h1>Пример работы с куками</h1>
+    <button id="fetchData">Получить данные</button>
+    <pre id="result"></pre>
+
+    <script>
+        // Функция для получения данных и работы с куками
+        async function fetchData() {
+            try {
+                const response = await fetch('https://v2.jokeapi.dev/joke/Any');
+                // const response = await fetch('https://dog.ceo/api/breeds/image/random');
+                // const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd');
+                // const response = await fetch('https://api.thecatapi.com/v1/images/search');
+                
+                //const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+                const data = await response.json();
+
+                // Установка куки
+                document.cookie = "exampleCookie=!!!; max-age=360"; // Кука на 1 час
+
+                // Вывод данных и куков
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                console.log('Текущие куки:', document.cookie);
+            } catch (error) {
+                console.error('Ошибка при получении данных:', error);
+            }
+        }
+
+        document.getElementById('fetchData').addEventListener('click', fetchData);
+    </script>
+</body>
+</html>
