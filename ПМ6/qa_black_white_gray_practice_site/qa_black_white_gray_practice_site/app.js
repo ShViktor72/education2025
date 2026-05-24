@@ -101,7 +101,7 @@ function validateEmail(email) {
 
 function validatePassword(password) {
   // BUG-2: требование от 8 до 20 включительно, но код требует строго больше 8.
-  return password.length > 8 && password.length <= 20;
+  return password.length >= 8 && password.length < 20;
 }
 
 function error(status, message) {
