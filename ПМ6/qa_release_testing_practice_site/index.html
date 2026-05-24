@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QA-практика: Smoke, Regression, Alpha/Beta, Acceptance</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Учебный стенд для релизного тестирования</p>
+      <h1>EduTask Release 2.4</h1>
+      <p class="subtitle">Онлайн-платформа для сдачи домашних заданий. В релиз добавлена новая функция: преподаватель может оставить комментарий к оценке.</p>
+    </div>
+    <div class="release-card">
+      <label for="buildSelect">Сборка</label>
+      <select id="buildSelect">
+        <option value="2.4.0">2.4.0 — smoke candidate</option>
+        <option value="2.4.1">2.4.1 — after smoke fix</option>
+      </select>
+      <button id="resetBtn" class="secondary">Сбросить стенд</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card wide">
+      <h2>1. Легенда релиза</h2>
+      <div class="grid-3">
+        <div class="info-block">
+          <h3>Изменение</h3>
+          <p>В карточку оценки добавлено поле «Комментарий преподавателя».</p>
+        </div>
+        <div class="info-block">
+          <h3>Риск</h3>
+          <p>Изменение может затронуть оценивание, отображение результата студенту, историю сдачи и уведомления.</p>
+        </div>
+        <div class="info-block">
+          <h3>Роль QA</h3>
+          <p>Проверить smoke, retesting, regression, alpha/beta feedback и приемочные критерии.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Требования</h2>
+      <ol class="requirements">
+        <li><b>REQ-01.</b> Студент и преподаватель могут войти в систему.</li>
+        <li><b>REQ-02.</b> Студент может загрузить домашнюю работу в формате PDF или DOCX до 10 МБ.</li>
+        <li><b>REQ-03.</b> Преподаватель видит отправленную работу студента.</li>
+        <li><b>REQ-04.</b> Преподаватель может поставить оценку от 0 до 100.</li>
+        <li><b>REQ-05.</b> Преподаватель может добавить комментарий к оценке длиной от 3 до 300 символов.</li>
+        <li><b>REQ-06.</b> Студент видит оценку и комментарий преподавателя.</li>
+        <li><b>REQ-07.</b> После оценки студент получает уведомление.</li>
+        <li><b>REQ-08.</b> История сдачи работы не должна теряться после изменения функции оценки.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>3. Тестовые данные</h2>
+      <table class="compact">
+        <tr><th>Роль</th><th>Логин</th><th>Пароль</th></tr>
+        <tr><td>Студент</td><td><code>student@test.com</code></td><td><code>Stud1234</code></td></tr>
+        <tr><td>Преподаватель</td><td><code>teacher@test.com</code></td><td><code>Teach1234</code></td></tr>
+      </table>
+      <p class="hint">Файлы для проверки: <code>homework.pdf</code>, <code>homework.docx</code>, размер 2 МБ или 12 МБ.</p>
+    </section>
+
+    <section class="card app-card">
+      <h2>4. Вход в систему</h2>
+      <div class="login-grid">
+        <div>
+          <label>Email<input id="loginEmail" value="student@test.com" /></label>
+        </div>
+        <div>
+          <label>Пароль<input id="loginPassword" value="Stud1234" type="password" /></label>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="loginStudentBtn">Войти как студент</button>
+        <button id="loginTeacherBtn" class="secondary">Войти как преподаватель</button>
+      </div>
+      <div id="loginMessage" class="message muted">Выберите роль и выполните вход.</div>
+    </section>
+
+    <section class="card app-card">
+      <h2>5. Рабочее место студента</h2>
+      <p class="hint">Проверяется старая критичная функция: загрузка домашнего задания.</p>
+      <label>Название файла<input id="fileName" value="homework.pdf" /></label>
+      <label>Размер файла, МБ<input id="fileSize" type="number" value="2" min="0" /></label>
+      <button id="uploadBtn">Загрузить работу</button>
+      <div id="studentMessage" class="message muted">Работа еще не загружена.</div>
+      <div class="state-box">
+        <h3>Что видит студент</h3>
+        <p><b>Оценка:</b> <span id="studentGrade">—</span></p>
+        <p><b>Комментарий:</b> <span id="studentComment">—</span></p>
+        <p><b>Уведомление:</b> <span id="studentNotification">—</span></p>
+      </div>
+    </section>
+
+    <section class="card app-card">
+      <h2>6. Рабочее место преподавателя</h2>
+      <p class="hint">Проверяется новая функция релиза: комментарий к оценке.</p>
+      <div id="submissionInfo" class="message muted">Отправленная работа пока не найдена.</div>
+      <label>Оценка 0–100<input id="gradeInput" type="number" value="85" min="0" max="100" /></label>
+      <label>Комментарий преподавателя<textarea id="commentInput" rows="4">Работа выполнена верно, но нужно подробнее объяснить вывод.</textarea></label>
+      <button id="saveGradeBtn">Сохранить оценку и комментарий</button>
+      <div id="teacherMessage" class="message muted">Оценка еще не сохранена.</div>
+    </section>
+
+    <section class="card wide">
+      <h2>7. Панель тестирования релиза</h2>
+      <div class="button-row">
+        <button id="runSmokeBtn">Запустить smoke-набор</button>
+        <button id="runRetestBtn" class="secondary">Запустить retesting BUG-SMOKE-001</button>
+        <button id="runRegressionBtn" class="secondary">Запустить regression-набор</button>
+        <button id="runUatBtn" class="secondary">Запустить acceptance/UAT</button>
+      </div>
+      <pre id="testOutput" class="panel">Результаты тестовых наборов появятся здесь.</pre>
+    </section>
+
+    <section class="card">
+      <h2>8. Alpha feedback</h2>
+      <p class="hint">Внутренние пользователи проверяют релиз в контролируемой среде.</p>
+      <div class="feedback-item"><b>QA Lead:</b> На сборке 2.4.0 сохранение оценки с комментарием не работает.</div>
+      <div class="feedback-item"><b>Методист:</b> Комментарий должен быть до 300 символов, но длинный текст отклоняется.</div>
+      <div class="feedback-item"><b>Преподаватель:</b> После оценки нет уверенности, что студент получил уведомление.</div>
+    </section>
+
+    <section class="card">
+      <h2>9. Beta feedback</h2>
+      <p class="hint">Внешние пользователи проверяют почти готовый продукт в условиях, близких к реальным.</p>
+      <div class="feedback-item"><b>Группа Б-21:</b> На телефоне часть комментария не помещается на экране.</div>
+      <div class="feedback-item"><b>Преподаватель-партнер:</b> Файлы DOCX после обновления не загружаются.</div>
+      <div class="feedback-item"><b>Студент:</b> Оценку видно, но комментарий преподавателя не отображается.</div>
+    </section>
+
+    <section class="card wide">
+      <h2>10. Технические панели</h2>
+      <div class="tabs">
+        <button class="tab active" data-target="apiPanel">API-ответ</button>
+        <button class="tab" data-target="dbPanel">База данных</button>
+        <button class="tab" data-target="logsPanel">Логи</button>
+        <button class="tab" data-target="releasePanel">Release notes</button>
+      </div>
+      <pre id="apiPanel" class="panel"></pre>
+      <pre id="dbPanel" class="panel hidden"></pre>
+      <pre id="logsPanel" class="panel hidden"></pre>
+      <pre id="releasePanel" class="panel hidden"></pre>
+    </section>
+
+    <section class="card wide">
+      <h2>11. Журнал дефектов</h2>
+      <form id="bugForm" class="bug-form">
+        <input id="bugTitle" placeholder="Краткое описание дефекта" />
+        <select id="bugType">
+          <option>Smoke</option>
+          <option>Retesting</option>
+          <option>Regression</option>
+          <option>Alpha</option>
+          <option>Beta</option>
+          <option>Acceptance</option>
+        </select>
+        <select id="bugSeverity">
+          <option>Minor</option>
+          <option>Major</option>
+          <option>Critical</option>
+        </select>
+        <button type="submit">Добавить</button>
+      </form>
+      <table>
+        <thead><tr><th>#</th><th>Дефект</th><th>Вид проверки</th><th>Severity</th></tr></thead>
+        <tbody id="bugTableBody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>Учебный стенд содержит намеренные дефекты. Задача студента — не исправить код, а оформить профессиональный QA-отчет по релизу.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

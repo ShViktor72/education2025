@@ -1,0 +1,266 @@
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #172033;
+  --muted: #667085;
+  --line: #d9deea;
+  --accent: #315efb;
+  --danger: #b42318;
+  --success: #067647;
+  --warning: #b54708;
+  --code: #111827;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  padding: 34px 48px;
+  color: white;
+  background: linear-gradient(135deg, #172033, #315efb);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: 12px;
+  opacity: .8;
+}
+
+h1, h2, h3 { margin-top: 0; }
+
+h1 {
+  margin-bottom: 10px;
+  font-size: 40px;
+}
+
+.subtitle {
+  max-width: 760px;
+  margin: 0;
+  line-height: 1.5;
+  opacity: .9;
+}
+
+.badge {
+  white-space: nowrap;
+  border: 1px solid rgba(255,255,255,.35);
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+}
+
+.layout {
+  max-width: 1240px;
+  margin: 24px auto;
+  padding: 0 20px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 10px 28px rgba(16,24,40,.06);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.requirements li {
+  margin-bottom: 8px;
+  line-height: 1.45;
+}
+
+label {
+  display: block;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+
+input, select {
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.actions, .bug-form {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover { filter: brightness(.95); }
+
+button.secondary {
+  color: var(--text);
+  background: #edf1ff;
+}
+
+.message {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #f9fafb;
+}
+
+.message.success {
+  color: var(--success);
+  border-color: #abefc6;
+  background: #ecfdf3;
+}
+
+.message.error {
+  color: var(--danger);
+  border-color: #fecdca;
+  background: #fef3f2;
+}
+
+.message.warning {
+  color: var(--warning);
+  border-color: #fedf89;
+  background: #fffaeb;
+}
+
+.muted { color: var(--muted); }
+
+.cabinet {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 16px;
+  background: #ecfdf3;
+  border: 1px solid #abefc6;
+}
+
+.hidden { display: none !important; }
+
+.small, .hint {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tab {
+  background: #eef2f7;
+  color: var(--text);
+}
+
+.tab.active {
+  background: var(--accent);
+  color: white;
+}
+
+.panel, .code {
+  max-height: 330px;
+  overflow: auto;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--code);
+  color: #e5e7eb;
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.code {
+  min-height: 260px;
+}
+
+.bug-form {
+  display: grid;
+  grid-template-columns: 1fr 180px 160px 120px;
+  margin-bottom: 16px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+th, td {
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  padding: 12px;
+}
+
+th {
+  background: #f2f4f7;
+}
+
+footer {
+  max-width: 1240px;
+  margin: 0 auto 30px;
+  padding: 0 20px;
+  color: var(--muted);
+}
+
+code {
+  padding: 2px 5px;
+  border-radius: 6px;
+  background: #eef2f7;
+  color: #172033;
+}
+
+pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+@media (max-width: 860px) {
+  .hero, .layout {
+    display: block;
+  }
+
+  .card {
+    margin-bottom: 18px;
+  }
+
+  .badge {
+    display: inline-block;
+    margin-top: 20px;
+  }
+
+  .bug-form, .actions {
+    display: block;
+  }
+
+  .actions button, .bug-form button {
+    margin-top: 10px;
+    width: 100%;
+  }
+}

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QA-практика: Black-box, White-box, Gray-box</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Учебный стенд для тестирования</p>
+      <h1>Авторизация пользователя</h1>
+      <p class="subtitle">
+        Модуль имитирует реальную задачу QA: форма входа, API-ответы, база данных,
+        логи и фрагменты кода для анализа.
+      </p>
+    </div>
+    <div class="badge">Black-box · White-box · Gray-box</div>
+  </header>
+
+  <main class="layout">
+    <section class="card">
+      <h2>1. Требования к модулю</h2>
+      <ol class="requirements">
+        <li>Email обязателен и должен иметь корректный формат: <code>name@example.com</code>.</li>
+        <li>Пароль обязателен, длина пароля — от 8 до 20 символов включительно.</li>
+        <li>Правильные данные: <code>qa@test.com</code> / <code>Pass1234</code>.</li>
+        <li>При правильных данных пользователь попадает в личный кабинет.</li>
+        <li>При неправильном пароле отображается ошибка.</li>
+        <li>После 5 неправильных попыток аккаунт блокируется.</li>
+        <li>Пароль в базе данных должен храниться не открытым текстом, а как hash.</li>
+        <li>После успешного входа API должен вернуть статус <code>200</code> и token.</li>
+      </ol>
+    </section>
+
+    <section class="card app-card">
+      <h2>2. Объект тестирования</h2>
+      <form id="loginForm" novalidate>
+        <label>
+          Email
+          <input id="email" name="email" type="text" placeholder="qa@test.com" autocomplete="off" />
+        </label>
+
+        <label>
+          Пароль
+          <input id="password" name="password" type="password" placeholder="Pass1234" autocomplete="off" />
+        </label>
+
+        <div class="actions">
+          <button type="submit">Войти</button>
+          <button type="button" id="resetBtn" class="secondary">Сбросить стенд</button>
+        </div>
+      </form>
+
+      <div id="message" class="message muted">Введите данные и нажмите «Войти».</div>
+
+      <div id="cabinet" class="cabinet hidden">
+        <h3>Личный кабинет</h3>
+        <p>Добро пожаловать, QA Engineer!</p>
+        <p class="small">Сессия активна. Проверьте API-ответ и запись в базе.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Панель gray-box</h2>
+      <p class="hint">В реальной работе QA может проверять API-ответ, БД, логи и внутренние состояния системы.</p>
+
+      <div class="tabs">
+        <button class="tab active" data-target="apiPanel">API-ответ</button>
+        <button class="tab" data-target="dbPanel">База данных</button>
+        <button class="tab" data-target="logsPanel">Логи</button>
+      </div>
+
+      <pre id="apiPanel" class="panel"></pre>
+      <pre id="dbPanel" class="panel hidden"></pre>
+      <pre id="logsPanel" class="panel hidden"></pre>
+    </section>
+
+    <section class="card">
+      <h2>4. Панель white-box</h2>
+      <p class="hint">Проанализируйте код и определите ветви, условия и потенциальные дефекты.</p>
+      <pre class="code"><code id="sourceCodeView"></code></pre>
+      <button id="runUnitTestsBtn" class="secondary">Запустить учебные unit-тесты</button>
+      <pre id="unitTestResult" class="panel"></pre>
+    </section>
+
+    <section class="card wide">
+      <h2>5. Журнал найденных дефектов</h2>
+      <p class="hint">Студенты могут фиксировать дефекты прямо в стенде, как в баг-репорте.</p>
+      <form id="bugForm" class="bug-form">
+        <input id="bugTitle" placeholder="Краткое описание дефекта" />
+        <select id="bugType">
+          <option>Black-box</option>
+          <option>White-box</option>
+          <option>Gray-box</option>
+        </select>
+        <select id="bugSeverity">
+          <option>Minor</option>
+          <option>Major</option>
+          <option>Critical</option>
+        </select>
+        <button type="submit">Добавить</button>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Дефект</th>
+            <th>Тип проверки</th>
+            <th>Severity</th>
+          </tr>
+        </thead>
+        <tbody id="bugTableBody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>Учебный стенд intentionally содержит дефекты. Цель — не «сломать сайт», а оформить профессиональные QA-артефакты.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
